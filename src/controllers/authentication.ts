@@ -7,9 +7,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     const { email, password } = req.body;
     if (!email || !password) return res.sendStatus(400);
 
-    const user = await getUserByEmail(email).select(
-      "+authentication.salt +authentication.password"
-    );
+    const user = await getUserByEmail(email).select("+authentication.salt +authentication.password");
     if (!user) return res.sendStatus(404);
 
     const expectedHash = authentication(user.authentication.salt, password);
@@ -19,13 +17,10 @@ export const login = async (req: express.Request, res: express.Response) => {
     }
 
     const salt = random();
-    user.authentication.sessionToken = authentication(
-      salt,
-      user._id.toString()
-    );
+    user.authentication.sessionToken = authentication(salt, user._id.toString());
     await user.save();
 
-    res.cookie("SESSION-AUTH", user.authentication.sessionToken, {
+    res.cookie("SESSION_TOKEN", user.authentication.sessionToken, {
       domain: "localhost",
       path: "/",
     });
