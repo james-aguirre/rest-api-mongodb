@@ -4,10 +4,10 @@ import { getUsers, deleteUserById, getUserById } from "../db/users";
 export const getAllUsers = async (req: express.Request, res: express.Response) => {
   try {
     const users = await getUsers();
-    return res.status(200).json(users);
+    return res.sendStatus(200).json(users);
   } catch (e) {
     console.log(e);
-    return res.status(400);
+    return res.sendStatus(400);
   }
 };
 
@@ -19,7 +19,7 @@ export const deleteUser = async (req: express.Request, res: express.Response) =>
     return res.json(deletedUser);
   } catch (e) {
     console.log(e);
-    return res.status(400);
+    return res.sendStatus(400);
   }
 };
 
@@ -27,13 +27,13 @@ export const updateUser = async (req: express.Request, res: express.Response) =>
   try {
     const { id } = req.params;
     const { username } = req.body;
-    if (!username || !id) return res.status(400);
+    if (!username || !id) return res.sendStatus(400);
 
     const user = await getUserById(id);
     user.username = username;
     await user.save();
 
-    return res.status(200).json(user).end();
+    return res.sendStatus(200).json(user).end();
   } catch (e) {
     console.log(e);
     return res.status(400);
